@@ -5,7 +5,7 @@
 ## 特徴
 
 - **ウェブスクレイピング**: マネーフォワード ME にログインし、株式ポートフォリオページをスクレイピングします。
-- **OTP処理**: ログイン時にメールで送信されるワンタイムパスワード（OTP）を（IMAP経由で）自動的に取得します。**注意:** 認証アプリなど、メールOTP以外の方法による二段階認証が有効になっているアカウントでは利用できません。
+- **OTP処理**: ログイン時にメールで送信されるワンタイムパスワード（OTP）または認証アプリで生成されるTOTP（Time-based One-Time Password）を自動的に取得して処理します。
 - **APIサーバー**: Express.js を使用して、スクレイピングをトリガーし、データを取得するためのシンプルなRESTful APIエンドポイントを提供します。
 - **コンテナ化**: 簡単なセットアップとデプロイのために `Dockerfile` と `docker-compose.yml` が含まれています。
 - **Cloud Run対応**: デプロイスクリプトを含め、Google Cloud Run へのデプロイに最適化されています。
@@ -15,6 +15,7 @@
 - **バックエンド**: Node.js, Express.js, TypeScript
 - **スクレイピング**: Playwright
 - **メール**: node-imap, mailparser
+- **OTP**: otplib
 - **コンテナ**: Docker
 
 ---
@@ -47,7 +48,13 @@ SECRET_KEY=your_secret_key
 LOGIN_MAIL=your_moneyforward_email@example.com
 LOGIN_PASS=your_moneyforward_password
 
-# OTPメール読み取り用のIMAP設定
+# 認証アプリによる2FA用のシークレットキー (認証アプリを使用する場合のみ)
+# マネーフォワードMEの2FA設定時に表示される英数字のキーを設定します。
+# メールOTPと認証アプリ2FAは排他的です。どちらか一方を設定してください。
+MF_TOTP_SECRET=your_authenticator_app_secret_key
+
+# OTPメール読み取り用のIMAP設定 (メールOTPを使用する場合のみ)
+# メールOTPと認証アプリ2FAは排他的です。どちらか一方を設定してください。
 IMAP_USER=your_email_for_otp@example.com
 IMAP_PASSWORD=your_email_app_password
 IMAP_HOST=imap.example.com

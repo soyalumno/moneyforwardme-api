@@ -2,6 +2,7 @@ import { chromium, Browser, Page, BrowserContext } from 'playwright-core';
 import fs from 'fs/promises';
 import Imap from 'node-imap';
 import { simpleParser } from 'mailparser';
+import { authenticator } from 'otplib';
 
 const timeout = 30_000;
 
@@ -173,6 +174,28 @@ class Scraper {
 
     // 2段階認証
     await this.page.waitForTimeout(2000);
+
+    const { MF_TOTP_SECRET } = process.env;
+
+    // 認証アプリによる2段階認証
+    if (MF_TOTP_SECRET) {
+      const totp_elem = await this.page.$('input#otp_attempt');
+      if (totp_elem) {
+        try {
+          console.log('Generating TOTP...');
+          const token = authenticator.generate(MF_TOTP_SECRET);
+          console.log(`submit totp...${token}`);
+          await totp_elem.type(token, { delay: 10 });
+          await this.page.click('button#submitto');
+          return; // ログイン処理完了
+        } catch (e) {
+          console.error('Failed to generate or submit TOTP.', e);
+          throw e;
+        }
+      }
+    }
+
+    // メールによる2段階認証
     const otp_elem = await this.page.$('input#email_otp');
     if (otp_elem) {
       try {

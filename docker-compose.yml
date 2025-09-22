@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: mf-gcr-app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./traces:/app/traces
+    # コンテナが停止したときに自動的に削除
+    # docker run の --rm オプションに相当する docker-compose の設定は直接ありませんが、
+    # 停止後に手動で docker-compose rm を実行するか、
+    # 開発中はコンテナを再利用するためにこの設定は通常不要です。
+    # 自動再起動をしない設定として "no" を指定します。
+    restart: "no"

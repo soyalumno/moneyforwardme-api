@@ -1,0 +1,22 @@
+# 依存関係のインストール時に生成されるディレクトリ
+node_modules/
+vendor/
+
+# ローカル開発用の設定ファイルやログ
+.env
+*.log
+tmp/
+
+# Git関連のファイル（通常はGitが管理するので不要）
+.git/
+.gitignore
+
+# その他のビルド不要なファイル
+README.md
+LICENSE
+package-lock.json  # npm install で再生成されるため
+yarn.lock          # yarn install で再生成されるため
+pnpm-lock.yaml     # pnpm install で再生成されるため
+docker-compose.yml
+.gcloudignore
+dist/
